@@ -1,0 +1,266 @@
+:root {
+  --input-bg: #f6f7fb;
+  --input-border: solid 1px #dee2e6;
+}
+
+:disabled {
+  background: var(--input-bg);
+}
+
+::-moz-placeholder {
+  color: #bbbbbb;
+}
+
+::placeholder {
+  color: #bbbbbb;
+}
+
+input[type=checkbox],
+input[type=radio] {
+  all: revert;
+  align-self: center;
+  margin: 0 0.5em 0 0;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+input[type=checkbox]:disabled,
+input[type=radio]:disabled {
+  cursor: inherit;
+}
+
+input[type=text],
+input[type=date],
+input[type=datetime],
+input[type=datetime-local],
+input[type=month],
+input[type=week],
+input[type=time],
+input[type=email],
+input[type=url],
+input[type=password],
+input[type=search],
+input[type=telephone],
+input[type=number],
+input[type=file],
+textarea {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.45rem 0.9rem;
+  border: var(--input-border);
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  font-size: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  outline: none;
+}
+
+input[type=file] {
+  overflow: hidden;
+  border: var(--input-border);
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  text-overflow: ellipsis;
+}
+
+input[type=file]::-webkit-file-upload-button {
+  margin: -0.45rem -0.9rem;
+  padding: 0.45rem 0.9rem;
+  border-width: 0;
+  border-style: solid;
+  border-color: inherit;
+  border-radius: 0;
+  background-color: var(--input-bg);
+  color: inherit;
+  pointer-events: none;
+  border-inline-end-width: var(--input-border);
+  margin-inline-end: 0.9rem;
+}
+
+textarea {
+  min-height: 6rem;
+  line-height: inherit;
+  resize: vertical;
+}
+
+label {
+  display: inline-block;
+}
+
+select {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.45rem 2.7rem 0.45rem 0.9rem;
+  border: var(--input-border);
+  border-radius: 0.25rem;
+  box-sizing: border-box;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-position: right 0.9rem center;
+  background-size: 14px 10px;
+  background-repeat: no-repeat;
+  font-size: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  outline: none;
+  cursor: pointer;
+}
+
+.input {
+  margin-bottom: 1.5rem;
+}
+.input_ttl {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  font-size: var(--fz-14);
+}
+.input_ttl.-req::after {
+  content: "*";
+  margin-left: 0.25rem;
+  color: var(--error);
+}
+.input_group {
+  display: flex;
+}
+.input_group_text {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0.9em;
+  border: var(--input-border);
+  background: var(--input-bg);
+  font-weight: 500;
+  font-size: var(--fz-14);
+}
+.input_group_text:has(+ input), .input_group_text:has(+ select) {
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+.input_group_text + input, .input_group_text + select {
+  border-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.input_group input,
+.input_group select {
+  flex: 1;
+}
+.input_group input:has(+ .input_group_text),
+.input_group select:has(+ .input_group_text) {
+  border-right: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.input_group input + .input_group_text,
+.input_group select + .input_group_text {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+.input_list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.9rem;
+}
+.input_list.-inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.input_list label {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.input_list label:has(:disabled) {
+  cursor: inherit;
+}
+.input_list label input:disabled + span {
+  opacity: 0.75;
+}
+.input_repeat {
+  border: var(--input-border);
+  counter-reset: number 0;
+}
+.input_repeat_item {
+  display: flex;
+}
+.input_repeat_item:not(:first-child) {
+  border-top: var(--input-border);
+}
+.input_repeat_item::before {
+  content: counter(number);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
+  border-right: var(--input-border);
+  background: var(--input-bg);
+  counter-increment: number 1;
+}
+.input_repeat_cnt {
+  flex: 1;
+  padding: 1.5rem;
+}
+.input_repeat_action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: var(--input-border);
+  background: var(--input-bg);
+}
+.input_feedback {
+  display: none;
+  margin-top: 0.25rem;
+  font-size: var(--fz-12);
+}
+.input.-valid textarea,
+.input.-valid input:not([type=checkbox]):not([type=radio]) {
+  padding-right: 2.7rem;
+  border-color: var(--success);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='1em' fill='%2328a745' viewBox='0 0 512 512'%3E%3C!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z'/%3E%3C/svg%3E");
+  background-position: right 0.9rem center;
+  background-size: 1rem;
+  background-repeat: no-repeat;
+}
+.input.-valid input[type=checkbox],
+.input.-valid input[type=radio],
+.input.-valid select {
+  border-color: var(--success);
+}
+.input.-valid label span {
+  color: var(--success);
+}
+.input.-valid .input_feedback {
+  display: block;
+  color: var(--success);
+}
+.input.-invalid textarea,
+.input.-invalid input:not([type=checkbox]):not([type=radio]) {
+  padding-right: 2.7rem;
+  border-color: var(--error);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='1em' fill='%23dc3545' viewBox='0 0 512 512'%3E%3C!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --%3E%3Cpath d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z'/%3E%3C/svg%3E");
+  background-position: right 0.9rem center;
+  background-size: 1rem;
+  background-repeat: no-repeat;
+}
+.input.-invalid input[type=checkbox],
+.input.-invalid input[type=radio],
+.input.-invalid select {
+  border-color: var(--error);
+}
+.input.-invalid label span {
+  color: var(--error);
+}
+.input.-invalid .input_feedback {
+  display: block;
+  color: var(--error);
+}
+.input .vs-code {
+  width: 100%;
+  height: 500px;
+  max-width: 100svh;
+}/*# sourceMappingURL=form.css.map */
