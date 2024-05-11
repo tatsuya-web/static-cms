@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
+            /*
+                name string
+                path string
+                mime string
+                size string
+                tree_id bigint [ref: - trees.id]
+            */
+            $table->string('name')->comment('ファイル名');
+            $table->string('path')->comment('ファイルパス');
+            $table->string('mime')->comment('MIMEタイプ');
+            $table->string('size')->comment('ファイルサイズ');
+            $table->foreignId('tree_id')->nullable()->constrained('trees')->comment('ツリーID');
             $table->timestamps();
         });
     }
