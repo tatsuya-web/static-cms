@@ -142,7 +142,7 @@ class SiteTreeController extends Controller
         }
         catch(\Exception $e) {
             $messege = $e->getMessage();
-            if($messege === 'Directory not empty') {
+            if($messege === config('error.directory_not_empty')) {
                 return redirect()->route('app.site_tree.index')->with('error', 'フォルダが空ではありません');
             }
             Log::error($e->getMessage());

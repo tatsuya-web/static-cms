@@ -143,11 +143,11 @@ class Tree extends Model
         $path = $this->getPath();
 
         if($this->is_folder && Storage::disk('html')->exists($path)) {
-            throw new \Exception('File or Folder already exists');
+            throw new \Exception(config('error.file_or_folder_already_exists'));
         }
 
         if($this->is_file && $file && Storage::disk('html')->exists($path . '/' . $file->getClientOriginalName())) {
-            throw new \Exception('File or Folder already exists');
+            throw new \Exception(config('error.file_or_folder_already_exists'));
         }
 
         if($file) {
@@ -242,7 +242,7 @@ class Tree extends Model
         $path = $this->getPath();
 
         if($this->is_folder && $this->children()->exists()) {
-            throw new \Exception('Directory not empty');
+            throw new \Exception(config('error.directory_not_empty'));
         }
 
         if($this->is_file && Storage::disk('html')->exists($path . '/' . $this->media->name)) {
