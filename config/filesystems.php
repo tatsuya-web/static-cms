@@ -36,6 +36,14 @@ return [
             'throw' => false,
         ],
 
+        /* htmlのファイルを保存するディスク */
+        'html' => [
+            'driver' => 'local',
+            // 'root' => public_path('app/html'),
+            'root' => storage_path('app/html'),
+            'throw' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -48,4 +48,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /*
+    * Get users without developper
+    *
+    * @return \Illuminate\Database\Eloquent\Collection
+    */
+    public static function getWithoutDevelopper()
+    {
+        return static::where('role', '!=', Role::Developper)->get();
+    }
+
+    /**
+     * Check if the user is a developper
+     *
+     * @return bool
+     */
+    public function getIsDevelopperAttribute(): bool
+    {
+        return $this->role === Role::Developper;
+    }
 }

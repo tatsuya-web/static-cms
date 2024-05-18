@@ -1,3 +1,5 @@
+@props(['title' => '', 'head' => '', 'footer' => ''])
+
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -22,9 +24,11 @@
 	<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 	<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
-    <!-- Torstar.js -->
+    <!-- Torstr.js -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
 
-    @slot('head')
+    {{ $head }}
 </head>
 
 <body>
@@ -53,8 +57,8 @@
 						<li><a href="/contents/work_list.html"><i class="fa-brands fa-creative-commons-nd"></i><span>制作事例</span></a></li>
 						<li><a href="/contents/recruit_list.html"><i class="fa-solid fa-briefcase"></i><span>採用情報</span></a></li>
 						<li class="-title mt-3">設定</li>
-						<li><a href="/user_list.html"><i class="fa-solid fa-address-card"></i><span>管理ユーザー</span></a></li>
-						<li><a href="/log.html"><i class="fa-solid fa-clock"></i><span>ログ</span></a></li>
+						<li><a href="{{ route('app.user.index') }}"><i class="fa-solid fa-address-card"></i><span>管理ユーザー</span></a></li>
+						<li><a href="{{ route('app.log.index') }}"><i class="fa-solid fa-clock"></i><span>ログ</span></a></li>
 						<li><a href="/"><i class="fa-solid fa-right-from-bracket"></i><span>ログアウト</span></a></li>
 					</ul>
 				</nav>
@@ -80,10 +84,27 @@
 				url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/ja.json',
 			},
 		});
+
+		// Toastr
+		@if (session('success'))
+			toastr.success('{{ session('success') }}');
+		@endif
+
+		@if (session('error'))
+			toastr.error('{{ session('error') }}');
+		@endif
+
+		@if (session('warning'))
+			toastr.warning('{{ session('warning') }}');
+		@endif
+
+		@if (session('info'))
+			toastr.info('{{ session('info') }}');
+		@endif
 	</script>
 	<script src="/js/common.js"></script>
 
-    @slot('footer')
+    {{ $footer }}
 </body>
 
 </html>

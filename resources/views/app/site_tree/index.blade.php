@@ -3,7 +3,7 @@
     <header class="main_hd">
         <h1 class="main_hd_ttl mb-0">サイト構成</h1>
         <ol class="main_hd_pnkz">
-            <li><a href="/">HOME</a></li>
+            <li><a href="{{ route('app.site_tree.index') }}">HOME</a></li>
             <li>サイト構成</li>
         </ol>
     </header>
@@ -15,8 +15,22 @@
                     <div class="tree">
                         <ul>
                             <li>
-                                <span class="folder -open"><i class="fa-solid fa-folder"></i>サイトトップ<a href="/site_tree_add.html"><i class="fa-solid fa-plus"></i></a></span>
+                                <span class="folder -open">
+                                    <i class="fa-solid fa-folder"></i>
+                                    <span class="folder_name">
+                                        サイトトップ
+                                    </span>
+                                    <a href="{{ route('app.site_tree.create') }}">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </a>
+                                </span>
+                                {{-- $treeをループさせる childrenがあれば再帰してchildrenがなくなるまで繰り返す --}}
                                 <ul>
+                                    @foreach($trees as $tree)
+                                        @include('app.site_tree._child', ['tree' => $tree])
+                                    @endforeach
+                                </ul>
+                                {{--<ul>
                                     <li><a href="site_tree_edit.html" class="file"><i class="fa-brands fa-html5"></i>index.html</a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></li>
                                     <li>
                                         <span class="folder -open"><i class="fa-solid fa-folder"></i>about<a href="/site_tree_add.html"><i class="fa-solid fa-plus"></i><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></a></span>
@@ -25,49 +39,7 @@
                                             <li><a href="/data/_index_240201.html" class="file"><i class="fa-brands fa-html5"></i>_index_240201.html</a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></li>
                                         </ul>
                                     </li>
-                                    <li>
-                                        <span class="folder -open"><i class="fa-solid fa-folder"></i>service<a href="/site_tree_add.html"><i class="fa-solid fa-plus"></i></a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></span>
-                                        <ul>
-                                            <li><a href="site_tree_edit.html" class="file"><i class="fa-brands fa-html5"></i>index.html</a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="folder -open"><i class="fa-solid fa-folder"></i>recruit<a href="/contents/recruit_new.html"><i class="fa-solid fa-plus"></i></a><button class="ibtn" onclick="delete_dialog(1)"></button></span>
-                                        <ul>
-                                            <li><a href="/contents/recruit_edit.html" class="file"><i class="fa-brands fa-html5"></i>r_01001939.html</a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <span class="folder -open"><i class="fa-solid fa-folder"></i>cmn<a href="/site_tree_add.html"><i class="fa-solid fa-plus"></i></a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></span>
-                                        <ul>
-                                            <li><a href="site_tree_edit.html" class="file"><i class="fa-solid fa-file"></i>readme.txt</a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></li>
-                                            <li>
-                                                <span class="folder -open"><i class="fa-solid fa-folder"></i>cmn<a href="/site_tree_add.html"><i class="fa-solid fa-plus"></i></a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></span>
-                                                <ul>
-                                                    <li>
-                                                        <span class="folder -open"><i class="fa-solid fa-folder"></i>js<a href="/site_tree_add.html"><i class="fa-solid fa-plus"></i></a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></span>
-                                                        <ul>
-                                                            <li><a href="site_tree_edit.html" class="file"><i class="fa-brands fa-square-js"></i>script.js</a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <span class="folder -open"><i class="fa-solid fa-folder"></i>css<a href="/site_tree_add.html"><i class="fa-solid fa-plus"></i></a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></span>
-                                                        <ul>
-                                                            <li><a href="site_tree_edit.html" class="file"><i class="fa-brands fa-css3-alt"></i>style.css</a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>
-                                                        <span class="folder -open"><i class="fa-solid fa-folder"></i>img<a href="/site_tree_add.html"><i class="fa-solid fa-plus"></i></a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></span>
-                                                        <ul>
-                                                            <li><a href="site_tree_edit.html" class="file"><i class="fa-solid fa-image"></i>img.ipg</a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></li>
-                                                            <li><a href="site_tree_edit.html" class="file"><i class="fa-solid fa-image"></i>img.svg</a><button class="ibtn" onclick="delete_dialog(1)"><i class="fa-solid fa-trash"></i></button></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
+                                </ul>--}}
                             </li>
                         </ul>
                     </div>
@@ -79,10 +51,12 @@
     <x-slot name="footer">
         <div id="dialog" class="dialog">
             <div class="card">
-                <h2 class="card_ttl">XXXXの削除</h2>
-                <p class="card_text">XXXXを削除してもよろしいですか？</p>
+                <h2 class="card_ttl">ファイル/フォルダの削除</h2>
+                <p class="card_text">ファイル/フォルダを削除してもよろしいですか？</p>
                 <div class="text-end mt-3">
-                    <form class="bgroup" action="" method="delete">
+                    <form class="bgroup" action="{{ route('app.site_tree.destroy') }}" method="post">
+                        @csrf
+                        @method('delete')
                         <input type="hidden" name="delete_id">
                         <button id="dialog_close" class="btn -gray" type="button">キャンセル</button>
                         <button class="btn" type="submit">削除する</button>
@@ -107,14 +81,19 @@
                 const folders = document.querySelectorAll('.folder');
 
                 for (let i = 0; i < folders.length; i++) {
-                    folders[i].addEventListener('click', function () {
-                        this.classList.toggle('-open');
-                        let ul = this.nextElementSibling;
-
-                        if (ul) {
-                            ul.style.display = ul.style.display === 'none' ? 'block' : 'none';
-                        }
-                    });
+                    // folders[i] 直下の.folder_nameをクリックした時の処理
+                    let folderName = folders[i].querySelector('.folder_name');
+                    if(folderName) {
+                        folderName.addEventListener('click', function () {
+                            let parent = folders[i];
+                            parent.classList.toggle('-open');
+                            let ul = parent.nextElementSibling;
+    
+                            if (ul) {
+                                ul.style.display = ul.style.display === 'none' ? 'block' : 'none';
+                            }
+                        });
+                    }
 
                     let ul = folders[i].nextElementSibling;
 

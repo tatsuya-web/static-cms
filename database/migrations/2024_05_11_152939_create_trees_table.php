@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('trees', function (Blueprint $table) {
             $table->id();
             /*
-                name string [note: 'unique']
+                name string
                 type string [note: 'file/folder']
                 status string [note: 'publish/draft']
                 create_user_id bigint [ref: > users.id]
                 parent_id bigint [ref: > trees.id]
                 template_id bigint [ref: > templates.id]
             */
-            $table->string('name')->unique()->comment('ファイル/フォルダ名');
+            $table->string('name')->comment('ファイル/フォルダ名');
             $table->string('type')->comment('コンテンツタイプ');
             $table->string('status')->comment('公開状態');
             $table->foreignId('user_id')->constrained('users')->comment('作成ユーザーID');
