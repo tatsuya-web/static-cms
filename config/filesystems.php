@@ -44,6 +44,13 @@ return [
             'throw' => false,
         ],
 
+        /* formatのファイルを保存するディスク */
+        'template' => [
+            'driver' => 'local',
+            'root' => storage_path('app/template'),
+            'throw' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -20,8 +20,6 @@ return new class extends Migration
                 single_value_name string
                 multi_value_name string
                 description string
-                format text
-                src text
                 create_user_id bigint [ref: > users.id]
             */
             $table->string('type')->comment('テンプレートタイプ');
@@ -30,8 +28,6 @@ return new class extends Migration
             $table->string('single_value_name')->comment('単一値名');
             $table->string('multi_value_name')->comment('複数値名');
             $table->string('description')->comment('説明');
-            $table->text('format')->comment('フォーマット');
-            $table->text('src')->comment('ソース');
             $table->foreignId('user_id')->constrained('users')->comment('作成ユーザーID');
             $table->timestamps();
         });

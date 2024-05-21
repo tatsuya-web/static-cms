@@ -51,15 +51,15 @@
 					<ul class="side_nav_list">
 						<li class="-title">構成管理</li>
 						<li><a href="{{ route('app.site_tree.index') }}"><i class="fa-solid fa-folder-tree"></i><span>サイト構成</span></a></li>
-						<li><a href="/template.html"><i class="fa-solid fa-crop-simple"></i><span>テンプレート</span></a></li>
+						<li><a href="{{ route('app.template.index') }}"><i class="fa-solid fa-crop-simple"></i><span>テンプレート</span></a></li>
 						<li class="-title mt-3">コンテンツ管理</li>
-						<li><a href="/contents/topics_list.html"><i class="fa-solid fa-newspaper"></i><span>Topics</span></a></li>
-						<li><a href="/contents/work_list.html"><i class="fa-brands fa-creative-commons-nd"></i><span>制作事例</span></a></li>
-						<li><a href="/contents/recruit_list.html"><i class="fa-solid fa-briefcase"></i><span>採用情報</span></a></li>
+						@foreach(\App\Models\Template::getPages() as $template)
+							<li><a href="#"><i class="fa-solid fa-newspaper"></i><span>{{ $template->show_name }}</span></a></li>
+						@endforeach
 						<li class="-title mt-3">設定</li>
 						<li><a href="{{ route('app.user.index') }}"><i class="fa-solid fa-address-card"></i><span>管理ユーザー</span></a></li>
 						<li><a href="{{ route('app.log.index') }}"><i class="fa-solid fa-clock"></i><span>ログ</span></a></li>
-						<li><a href="/"><i class="fa-solid fa-right-from-bracket"></i><span>ログアウト</span></a></li>
+						<li><a href="{{ route('logout') }}"><i class="fa-solid fa-right-from-bracket"></i><span>ログアウト</span></a></li>
 					</ul>
 				</nav>
 			</div>
@@ -77,7 +77,7 @@
 	</div>
     <script>
 		// DataTables
-		new DataTable('#table', {
+		new DataTable('table', {
 			bStateSave: true,
 			pageLength: 25,
 			language: {

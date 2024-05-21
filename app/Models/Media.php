@@ -16,11 +16,23 @@ class Media extends Model
         'mime',
         'size',
         'tree_id',
+        'format_id',
+        'src_id',
     ];
 
     public function tree()
     {
         return $this->belongsTo(Tree::class);
+    }
+
+    public function formatTemplate()
+    {
+        return $this->belongsTo(Template::class, 'format_id');
+    }
+
+    public function srcTemplate()
+    {
+        return $this->belongsTo(Template::class, 'src_id');
     }
 
     /*
@@ -30,6 +42,12 @@ class Media extends Model
     */
     public function getFileAttribute(): string
     {
-        return Storage::disk('html')->get($this->path);
+        $disk = 'html';
+
+        if(isset($this->format_id) || isset($this->src_id)) {
+            $disk = 'template';
+        }
+
+        return Storage::disk($disk)->get($this->path);
     }
 }

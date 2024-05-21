@@ -3,7 +3,7 @@
         <h1 class="main_hd_ttl mb-0">編集 | サイト構成</h1>
         <ol class="main_hd_pnkz">
             <li><a href="{{ route('app.site_tree.index') }}">HOME</a></li>
-            <li>編集 | サイト構成</li>
+            <li>編集</li>
         </ol>
     </header>
     <div class="main_cnt">

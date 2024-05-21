@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('status')->comment('公開状態');
             $table->foreignId('user_id')->constrained('users')->comment('作成ユーザーID');
             $table->foreignId('parent_id')->nullable()->constrained('trees')->comment('親ID');
-            $table->foreignId('template_id')->nullable()->constrained('templates')->comment('テンプレートID');
+            $table->foreignId('template_id')->nullable()->constrained('templates')->comment('テンプレートID')->onDelete('set null');
             $table->timestamps();
         });
     }

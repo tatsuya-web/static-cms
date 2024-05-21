@@ -14,7 +14,7 @@ class UserController extends Controller
 {
     public function index(): View
     {
-        $users = auth()->user()->role === Role::developper
+        $users = auth()->user()->role === Role::Developper
             ? User::all()
             : User::getWithoutDevelopper();
 

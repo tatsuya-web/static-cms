@@ -25,6 +25,8 @@ return new class extends Migration
             $table->string('mime')->comment('MIMEタイプ');
             $table->string('size')->comment('ファイルサイズ');
             $table->foreignId('tree_id')->nullable()->constrained('trees')->comment('ツリーID');
+            $table->foreignId('format_id')->nullable()->constrained('templates')->onDelete('cascade')->comment('フォーマットID');
+            $table->foreignId('src_id')->nullable()->constrained('templates')->onDelete('cascade')->comment('ソースID');
             $table->timestamps();
         });
     }

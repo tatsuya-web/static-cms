@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PreviewController;
 use App\Http\Controllers\SiteTreeController;
+use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\MediaController;
@@ -21,6 +22,36 @@ Route::name('app.')->prefix('_app')->group(function () {
         Route::post('/update/{tree}', [SiteTreeController::class, 'update'])
             ->name('update');
         Route::delete('/destroy', [SiteTreeController::class, 'destroy'])
+            ->name('destroy');
+    });
+
+    // template
+    Route::name('template.')->prefix('template')->group(function () {
+        Route::get('/', [TemplateController::class, 'index'])
+            ->name('index');
+        // common
+        Route::name('common.')->prefix('common')->group(function () {
+            Route::get('/create', [TemplateController::class, 'commonCreate'])
+                ->name('create');
+            Route::post('/store', [TemplateController::class, 'commonStore'])
+                ->name('store');
+            Route::get('/edit/{template}', [TemplateController::class, 'commonEdit'])
+                ->name('edit');
+            Route::post('/update/{template}', [TemplateController::class, 'commonUpdate'])
+                ->name('update');
+        });
+        // page
+        Route::name('page.')->prefix('page')->group(function () {
+            Route::get('/create', [TemplateController::class, 'pageCreate'])
+                ->name('create');
+            Route::post('/store', [TemplateController::class, 'pageStore'])
+                ->name('store');
+            Route::get('/edit/{template}', [TemplateController::class, 'pageEdit'])
+                ->name('edit');
+            Route::post('/update/{template}', [TemplateController::class, 'pageUpdate'])
+                ->name('update');
+        });
+        Route::delete('/destroy', [TemplateController::class, 'destroy'])
             ->name('destroy');
     });
 

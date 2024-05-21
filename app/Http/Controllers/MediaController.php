@@ -11,7 +11,13 @@ class MediaController extends Controller
 {
     public function download(Media $media) : BinaryFileResponse
     {
-        $path = Storage::disk('html')->path($media->path);
+        $disk = 'html';
+
+        if(isset($media->format_id) || isset($media->src_id)) {
+            $disk = 'template';
+        }
+
+        $path = Storage::disk($disk)->path($media->path);
 
         return response()->download($path, $media->name, [
             'Content-Type' => $media->mime_type,
