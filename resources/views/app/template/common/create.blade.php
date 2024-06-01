@@ -1,6 +1,6 @@
 <x-app-layout title="新規登録 | 共通テンプレート | サイト構成">
     <header class="main_hd">
-        <h1 class="main_hd_ttl mb-0">新規登録 | 共通テンプレート</h1>
+        <h1 class="main_hd_ttl mb-0">新規登録</h1>
         <ol class="main_hd_pnkz">
             <li><a href="{{ route('app.site_tree.index') }}">HOME</a></li>
             <li><a href="{{ route('app.template.index') }}">テンプレート</a></li>

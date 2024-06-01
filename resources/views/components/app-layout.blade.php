@@ -28,6 +28,9 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 	<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet"/>
 
+	<!-- TinyMCE -->
+	<script src="/lib/tinymce/js/tinymce/tinymce.min.js"></script>
+
     {{ $head }}
 </head>
 
@@ -54,7 +57,7 @@
 						<li><a href="{{ route('app.template.index') }}"><i class="fa-solid fa-crop-simple"></i><span>テンプレート</span></a></li>
 						<li class="-title mt-3">コンテンツ管理</li>
 						@foreach(\App\Models\Template::getPages() as $template)
-							<li><a href="#"><i class="fa-solid fa-newspaper"></i><span>{{ $template->show_name }}</span></a></li>
+							<li><a href="{{ route('app.content.index', ['template' => $template]) }}"><i class="fa-solid fa-newspaper"></i><span>{{ $template->show_name }}</span></a></li>
 						@endforeach
 						<li class="-title mt-3">設定</li>
 						<li><a href="{{ route('app.user.index') }}"><i class="fa-solid fa-address-card"></i><span>管理ユーザー</span></a></li>

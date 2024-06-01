@@ -24,9 +24,11 @@ class Format
 
     private string $accept;
 
+    private bool $index = false;
+
     public function __construct(object $data){
-        if(TemplateFormat::from($data->type) === null) {
-            throw new \InvalidArgumentException('invalid_type');
+        if(!TemplateFormat::exist($data->type)) {
+            throw new \Exception(config('error.invalid_type'));
         }
 
         $this->label = $data->label;
@@ -38,6 +40,7 @@ class Format
         $this->min = $data->min ?? null;
         $this->max = $data->max ?? null;
         $this->accept = $data->accept ?? '';
+        $this->index = $data->index ?? false;
     }
 
     public function getLabel(): string
@@ -88,6 +91,11 @@ class Format
     public function getAcceptString(): string
     {
         return TemplateFormat::getAcceptTypeString($this->accept);
+    }
+
+    public function isIndex(): bool
+    {
+        return $this->index;
     }
 
     public function hasOptions(): bool

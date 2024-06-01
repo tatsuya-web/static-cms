@@ -51,6 +51,11 @@ class Template extends Model
         return $this->hasOne(Tree::class);
     }
 
+    public function contents()
+    {
+        return [];
+    }
+
     /*
     * テンプレートのフォーマットのjsonファイルを読み込みコレクションで返す
     *
@@ -74,6 +79,23 @@ class Template extends Model
     }
 
     /*
+    * テンプレートをロードして正常に読み込めたかどうかを返す
+    *
+    * @return bool
+    */
+    public function getIsValidedFormatAttribute(): bool
+    {
+        try {
+            $this->format_items;
+        }
+        catch(\Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /*
     * 共通テンプレートの一覧を取得
     *
     * @return \Illuminate\Database\Eloquent\Collection
@@ -91,6 +113,30 @@ class Template extends Model
     public static function getPages()
     {
         return self::where('type', TemplateType::Page)->get();
+    }
+
+    /*
+    * テンプレートのソースコードのjsonファイルを読み込みindexがtrueのものだけを返す
+    *
+    * @return array
+    */
+    public function hasIndexLabels(): array
+    {
+        $format = $this->format_items;
+
+        if(!isset($format)) {
+            return [];
+        }
+
+        $index_labels = [];
+
+        foreach($format as $item) {
+            if($item->isIndex()) {
+                $index_labels[] = $item->getLabel();
+            }
+        }
+
+        return $index_labels;
     }
 
     /*

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PreviewController;
 use App\Http\Controllers\SiteTreeController;
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\ContentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\MediaController;
@@ -53,6 +54,14 @@ Route::name('app.')->prefix('_app')->group(function () {
         });
         Route::delete('/destroy', [TemplateController::class, 'destroy'])
             ->name('destroy');
+    });
+
+    // content
+    Route::name('content.')->prefix('content')->group(function () {
+        Route::get('/{template}', [ContentController::class, 'index'])
+            ->name('index');
+        Route::get('/create/{template}', [ContentController::class, 'create'])
+            ->name('create');
     });
 
     // user

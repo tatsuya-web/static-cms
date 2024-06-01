@@ -250,7 +250,7 @@ class Tree extends Model
             Storage::disk('html')->delete($path . '/' . $this->media->name);
         }
 
-        if($this->is_folider && Storage::disk('html')->exists($path)) {
+        if($this->is_folder && Storage::disk('html')->exists($path)) {
             Storage::disk('html')->deleteDirectory($path);
         }
     }

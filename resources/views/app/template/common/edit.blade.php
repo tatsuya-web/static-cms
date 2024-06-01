@@ -1,6 +1,6 @@
 <x-app-layout title="編集 | 共通テンプレート | サイト構成">
     <header class="main_hd">
-        <h1 class="main_hd_ttl mb-0">編集 | 共通テンプレート</h1>
+        <h1 class="main_hd_ttl mb-0">編集</h1>
         <ol class="main_hd_pnkz">
             <li><a href="{{ route('app.site_tree.index') }}">HOME</a></li>
             <li><a href="{{ route('app.template.index') }}">テンプレート</a></li>
@@ -60,11 +60,12 @@
                                         入力フォーマットファイルがアップロードされていません
                                     @endif
                                 </p>
-                                @if($template->format)
+                                @if($template->format && $template->is_valided_format)
                                 <h2 class="card_ttl mt-6">設定項目一覧</h2>
                                 <table>
                                     <thead>
                                         <tr>
+                                            <th>#</th>
                                             <th>表示名</th>
                                             <th>項目名</th>
                                             <th>タイプ</th>
@@ -74,8 +75,9 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($template->format_items as $item)
+                                        @foreach($template->format_items as $key => $item)
                                         <tr>
+                                            <td>{{ $key + 1 }}</td>
                                             <td>{{ $item->getLabel() }}</td>
                                             <td>{{ $item->getName() }}</td>
                                             <td>{{ $item->getType() }}</td>
@@ -102,6 +104,8 @@
                                         @endforeach
                                     </tbody>
                                 </table>
+                                @else
+                                    <p>設定項目が間違っている可能性があります。入力フォーマットファイルを確認してください。</p>
                                 @endif
                                 <div class="input @error('src') -invalid @enderror">
                                     <label class="input_ttl">ソースファイル</label>

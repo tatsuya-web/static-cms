@@ -13,11 +13,19 @@ enum TemplateFormat : string
     case DateTime = 'datetime';
     case Number = 'number';
     case Textarea = 'textarea';
-    case RicheEditor = 'riche_editor';
+    case RichEditor = 'rich_editor';
     case Select = 'select';
     case Radio = 'radio';
     case Checkbox = 'checkbox';
     case File = 'file';
+
+    public static function exist(string $type): bool
+    {
+        return match ($type) {
+            'text', 'url', 'email', 'tel', 'date', 'time', 'datetime', 'number', 'textarea', 'rich_editor', 'select', 'radio', 'checkbox', 'file' => true,
+            default => false,
+        };
+    }
 
     public function hasOptions(): bool
     {
