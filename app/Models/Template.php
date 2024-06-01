@@ -8,6 +8,7 @@ use Illuminate\Http\UploadedFile;
 use App\Enums\TemplateType;
 use App\Enums\TreeStatus;
 use App\Enums\TreeType;
+use App\Enums\TemplateFormat;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -61,7 +62,7 @@ class Template extends Model
     *
     * @return \Illuminate\Support\Collection
     */
-    public function getFormatItemsAttribute(): Collection
+    public function getFormatItemsAttribute(): Collection | bool
     {
         $format = collect(json_decode(Storage::disk('template')->get($this->format->path)));
 
@@ -72,6 +73,9 @@ class Template extends Model
         $format_items = collect();
 
         foreach($format['items'] as $item) {
+            if(! TemplateFormat::exist($item->type)) {
+                return false;
+            }
             $format_items->push(new Format($item));
         }
 
@@ -85,10 +89,7 @@ class Template extends Model
     */
     public function getIsValidedFormatAttribute(): bool
     {
-        try {
-            $this->format_items;
-        }
-        catch(\Exception $e) {
+        if($this->format_items === false) {
             return false;
         }
 

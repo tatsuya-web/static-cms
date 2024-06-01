@@ -27,10 +27,6 @@ class Format
     private bool $index = false;
 
     public function __construct(object $data){
-        if(!TemplateFormat::exist($data->type)) {
-            throw new \Exception(config('error.invalid_type'));
-        }
-
         $this->label = $data->label;
         $this->name = $data->name;
         $this->type = TemplateFormat::from($data->type);

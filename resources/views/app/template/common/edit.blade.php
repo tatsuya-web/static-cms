@@ -105,7 +105,7 @@
                                     </tbody>
                                 </table>
                                 @else
-                                    <p>設定項目が間違っている可能性があります。入力フォーマットファイルを確認してください。</p>
+                                    <p style="color: rgb(225, 36, 36); font-weight: bold; margin-top: 1rem;">設定項目が間違っている可能性があります。入力フォーマットファイルを確認してください。</p>
                                 @endif
                                 <div class="input @error('src') -invalid @enderror">
                                     <label class="input_ttl">ソースファイル</label>
