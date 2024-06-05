@@ -12,8 +12,8 @@
     <select name="{{ $name }}" @if($required) required @endif>
         <option>選択してください</option>
         @foreach($options as $option)
-            <option value="{{ $option->value }}" @if(old($name) == $option->value) selected @endif
-                @if($value !== null && in_array($option->value, $value)) checked @endif>{{ $option->label }}</option>
+            <option value="{{ $option->value }}" @if(old($name, $value) == $option->value) selected @endif
+                @if($value !== null && $option->value === $value) checked @endif>{{ $option->label }}</option>
         @endforeach
     </select>
     @if($placeholder !== '')

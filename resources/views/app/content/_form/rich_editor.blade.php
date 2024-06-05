@@ -7,7 +7,7 @@
 ])
 <div class="input @error($name) -invalid @enderror">
 <label class="input_ttl @if($required) -req @endif">{{ $label }}</label>
-<textarea name="{{ $name }}" id="ID__{{ $name }}" placeholder="{{ $placeholder }}" @if($required) required @endif>{{ $value }}</textarea>
+<textarea name="{{ $name }}" id="ID__{{ $name }}" placeholder="{{ $placeholder }}">{{ $value }}</textarea>
 @error($name)
 <div class="input_feedback">
     <span>{{ $message }}</span>

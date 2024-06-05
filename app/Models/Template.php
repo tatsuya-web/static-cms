@@ -52,9 +52,14 @@ class Template extends Model
         return $this->hasOne(Tree::class);
     }
 
+    public function values()
+    {
+        return $this->hasMany(Value::class);
+    }
+
     public function contents()
     {
-        return [];
+        return $this->hasMany(Content::class);
     }
 
     /*
@@ -118,6 +123,7 @@ class Template extends Model
 
     /*
     * テンプレートのソースコードのjsonファイルを読み込みindexがtrueのものだけを返す
+    * labelの配列を返す
     *
     * @return array
     */
@@ -139,6 +145,32 @@ class Template extends Model
 
         return $index_labels;
     }
+
+    /*
+    * テンプレートのソースコードのjsonファイルを読み込みindexがtrueのものだけを返す
+    * nameの配列を返す
+    *
+    * @return array
+    */
+    public function hasIndexNames(): array
+    {
+        $format = $this->format_items;
+
+        if(!isset($format)) {
+            return [];
+        }
+
+        $index_names = [];
+
+        foreach($format as $item) {
+            if($item->isIndex()) {
+                $index_names[] = $item->getName();
+            }
+        }
+
+        return $index_names;
+    }
+
 
     /*
     * テンプレートのフォーマットを作成
@@ -222,6 +254,19 @@ class Template extends Model
     }
 
     /*
+    * テンプレートのソースコードを削除
+    *
+    * @return void
+    */
+    public function deleteSrc(): void
+    {
+        if($this->src) {
+            $this->src->delete();
+            Storage::disk('template')->delete($this->src->path);
+        }
+    }
+
+    /*
     * ツリーを作成
     * @param string $path
     *
@@ -289,15 +334,83 @@ class Template extends Model
     }
 
     /*
-    * テンプレートのソースコードを削除
+    * Content,Valuesを作成する
     *
+    * @param array $values
     * @return void
     */
-    public function deleteSrc(): void
+    public function makeContent(array $values): bool
     {
-        if($this->src) {
-            $this->src->delete();
-            Storage::disk('template')->delete($this->src->path);
-        }
+        DB::transaction(function() use ($values) {
+
+            $content = $this->contents()->create([
+                'user_id' => auth()->user()->id,
+            ]);
+
+            foreach($values as $key => $value) {
+
+                $format = $this->format_items->filter(function($item) use ($key) {
+                    return $item->getName() === $key;
+                })->first();
+
+                if(! $format) {
+                    FacadesLog::error(config('error.invalid_format'));
+                    return false;
+                }
+
+                // $valueが配列の場合は、:で区切って保存する
+                if(is_array($value)) {
+                    $value = implode(':', $value);
+                }
+
+                $content->values()->create([
+                    'format' => $format->getType(),
+                    'name' => $key,
+                    'value' => $value,
+                ]);
+            }
+        });
+
+        return true;
+    }
+
+    /*
+    * Valuesを更新する
+    *
+    * @param Content $content
+    * @param array $values
+    * @return bool
+    */
+    public function updateContent(Content $content, array $values): bool
+    {
+        DB::transaction(function() use ($content, $values) {
+
+            $content->values()->delete();
+
+            foreach($values as $key => $value) {
+
+                $format = $this->format_items->filter(function($item) use ($key) {
+                    return $item->getName() === $key;
+                })->first();
+
+                if(! $format) {
+                    FacadesLog::error(config('error.invalid_format'));
+                    return false;
+                }
+
+                // $valueが配列の場合は、:で区切って保存する
+                if(is_array($value)) {
+                    $value = implode(':', $value);
+                }
+
+                $content->values()->create([
+                    'format' => $format->getType(),
+                    'name' => $key,
+                    'value' => $value ?? '',
+                ]);
+            }
+        });
+
+        return true;
     }
 }

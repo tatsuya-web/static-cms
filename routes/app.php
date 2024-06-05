@@ -62,6 +62,12 @@ Route::name('app.')->prefix('_app')->group(function () {
             ->name('index');
         Route::get('/create/{template}', [ContentController::class, 'create'])
             ->name('create');
+        Route::post('/store/{template}', [ContentController::class, 'store'])
+            ->name('store');
+        Route::get('/edit/{template}/{content}', [ContentController::class, 'edit'])
+            ->name('edit');
+        Route::post('/update/{template}/{content}', [ContentController::class, 'update'])
+            ->name('update');
     });
 
     // user

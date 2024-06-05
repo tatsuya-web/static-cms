@@ -49,6 +49,11 @@ class Format
         return $this->name;
     }
 
+    public function getValidationName(): string
+    {
+        return $this->name;
+    }
+
     public function getType(): string
     {
         return $this->type->value;

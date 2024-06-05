@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Content\ContentCreateRequest;
+use App\Models\Content;
 use App\Models\Template;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -28,5 +30,49 @@ class ContentController extends Controller
         }
 
         return view('app.content.create', compact('template'));
+    }
+
+    public function store(ContentCreateRequest $request, Template $template) : RedirectResponse
+    {
+        if($template->is_valided_format === false) {
+            Log::error(config('error.invalid_type'));
+            return redirect()->route('app.site_tree.index')->with('error', config('error.invalid_type'));
+        }
+
+        $result = $template->makeContent($request->validatedData());
+
+        if(! $result) {
+            Log::error(config('error.failed_save'));
+            return redirect()->route('app.site_tree.index', ['template' => $template])->with('error', config('error.failed_save'));
+        }
+
+        return redirect()->route('app.content.index', ['template' => $template])->with('success', '登録しました');
+    }
+
+    public function edit(Template $template, Content $content) : View|RedirectResponse
+    {
+        if($template->is_valided_format === false) {
+            Log::error(config('error.invalid_type'));
+            return redirect()->route('app.site_tree.index')->with('error', config('error.invalid_type'));
+        }
+
+        return view('app.content.edit', compact('template', 'content'));
+    }
+
+    public function update(ContentCreateRequest $request, Template $template, Content $content) : RedirectResponse
+    {
+        if($template->is_valided_format === false) {
+            Log::error(config('error.invalid_type'));
+            return redirect()->route('app.site_tree.index')->with('error', config('error.invalid_type'));
+        }
+
+        $result = $template->updateContent($content, $request->validatedData());
+
+        if(! $result) {
+            Log::error(config('error.failed_save'));
+            return redirect()->route('app.site_tree.index', ['template' => $template])->with('error', config('error.failed_save'));
+        }
+
+        return redirect()->back()->with('success', '更新しました');
     }
 }

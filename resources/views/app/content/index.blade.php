@@ -30,17 +30,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach([] as $content)
+                            @foreach($template->contents as $content)
                             <tr>
                                 <td>{{ $content->id }}</td>
-                                @foreach ($template->hasIndexLabels as $label)
-                                    <td>{{ $content->getIndexValue($label) }}</td>
+                                @foreach ($template->hasIndexNames() as $name)
+                                    <td>{{ $content->getIndexValue($name) }}</td>
                                 @endforeach
                                 <td>{{ $content->user->name }}</td>
                                 <td>{{ $content->created_at }}</td>
                                 <td>{{ $content->updated_at }}</td>
                                 <td>
-                                    <a href="{{ route('app.content.edit', ['content' => $content]) }}"><i class="fa-solid fa-pen"></i></a>
+                                    <a href="{{ route('app.content.edit', ['template' => $template, 'content' => $content]) }}"><i class="fa-solid fa-pen"></i></a>
                                     <button class="ibtn" onclick="delete_dialog({{ $content->id }})"><i class="fa-solid fa-trash"></i></button>
                                 </td>
                             </tr>

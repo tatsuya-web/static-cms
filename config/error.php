@@ -8,4 +8,7 @@ return [
 
     // TemplateType Error
     'invalid_type' => 'Invalid type',
+
+    // Template Error
+    'failed_save' => 'Failed to save',
 ];
