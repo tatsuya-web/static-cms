@@ -68,6 +68,8 @@ Route::name('app.')->prefix('_app')->group(function () {
             ->name('edit');
         Route::post('/update/{template}/{content}', [ContentController::class, 'update'])
             ->name('update');
+        Route::delete('/destroy/{template}', [ContentController::class, 'destroy'])
+            ->name('destroy');
     });
 
     // user

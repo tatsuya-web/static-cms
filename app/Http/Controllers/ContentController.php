@@ -75,4 +75,18 @@ class ContentController extends Controller
 
         return redirect()->back()->with('success', '更新しました');
     }
+
+    public function destroy(Request $request, Template $template) : RedirectResponse
+    {
+        $content = Content::findOrFail($request->delete_id);
+
+        $result = $content->delete();
+
+        if(! $result) {
+            Log::error(config('error.failed_delete'));
+            return redirect()->route('app.content.index', ['template' => $template])->with('error', config('error.failed_delete'));
+        }
+
+        return redirect()->route('app.content.index', ['template' => $template])->with('success', '削除しました');
+    }
 }

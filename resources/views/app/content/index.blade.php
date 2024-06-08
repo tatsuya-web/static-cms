@@ -55,10 +55,10 @@
     <x-slot name="footer">
         <div id="dialog" class="dialog">
             <div class="card">
-                <h2 class="card_ttl">管理ユーザーの削除</h2>
-                <p class="card_text">管理ユーザーを削除してもよろしいですか？</p>
+                <h2 class="card_ttl">{{ $template->name }}の削除</h2>
+                <p class="card_text">{{ $template->name }}を削除してもよろしいですか？</p>
                 <div class="text-end mt-3">
-                    <form class="bgroup" action="{{ route('app.user.destroy') }}" method="post">
+                    <form class="bgroup" action="{{ route('app.content.destroy', ['template' => $template]) }}" method="post">
                         @csrf
                         @method('delete')
                         <input type="hidden" name="delete_id">

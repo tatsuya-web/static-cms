@@ -11,4 +11,5 @@ return [
 
     // Template Error
     'failed_save' => 'Failed to save',
+    'failed_delete' => 'Failed to delete',
 ];
