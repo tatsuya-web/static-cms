@@ -26,7 +26,7 @@ class CommonTemplateUpdateRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:255'],
             'format' => ['nullable', 'file', 'mimes:json'],
-            'src' => ['nullable', 'file', 'mimes:html'],
+            'src' => ['nullable', 'file', 'mimes:html,txt'],
         ];
     }
 
@@ -82,4 +82,9 @@ class CommonTemplateUpdateRequest extends FormRequest
             'src' => $this->file('src') ?? null,
         ];
     }
+
+    /*
+    * srcは拡張子が.htmlのファイルのみ許可する
+    * 
+    */
 }

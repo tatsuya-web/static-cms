@@ -102,6 +102,32 @@ class Template extends Model
     }
 
     /*
+    * テンプレートのbladeの名前を返す
+    *
+    * @return string
+    */
+    public function getBladeNameAttribute(): string
+    {
+        $prefix = 'page_';
+
+        if($this->type->isCommon()) {
+            $prefix = 'cmn_';
+        }
+
+        return $prefix . $this->name . '.blade.php';
+    }
+
+    /*
+    * テンプレートのbladeファイルが存在するかどうかを返す
+    *
+    * @return bool
+    */
+    public function getIsExistsBladeAttribute(): bool
+    {
+        return Storage::disk('views')->exists($this->blade_name);
+    }
+
+    /*
     * 共通テンプレートの一覧を取得
     *
     * @return \Illuminate\Database\Eloquent\Collection
@@ -235,6 +261,8 @@ class Template extends Model
         ]);
 
         Storage::disk('template')->put($src->path, $file->get());
+
+        $this->updateOrCreateBlade();
     }
 
     /*
@@ -263,6 +291,10 @@ class Template extends Model
         if($this->src) {
             $this->src->delete();
             Storage::disk('template')->delete($this->src->path);
+
+            if($this->is_exists_blade) {
+                Storage::disk('views')->delete($this->blade_name);
+            }
         }
     }
 
@@ -412,5 +444,25 @@ class Template extends Model
         });
 
         return true;
+    }
+
+    /*
+    * viewで表示するためのbladeファイルを作成する 
+    * 保存先はviewsディスク
+    * srcファイルが存在しない場合は作成しない
+    * 既にbladeファイルが存在する場合は上書きする
+    * templateの名前(name)に接頭辞cmn_をつける
+    *
+    * @return void
+    */
+    public function updateOrCreateBlade(): void
+    {
+        if(! $this->src) {
+            return;
+        }
+
+        $src = Storage::disk('template')->get($this->src->path);
+
+        Storage::disk('views')->put($this->blade_name, $src);
     }
 }

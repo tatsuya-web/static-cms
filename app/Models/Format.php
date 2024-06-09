@@ -30,7 +30,7 @@ class Format
         $this->label = $data->label;
         $this->name = $data->name;
         $this->type = TemplateFormat::from($data->type);
-        $this->required = $data->required;
+        $this->required = $data->required ?? false;
         $this->placeholder = $data->placeholder ?? '';
         $this->options = $data->options ?? [];
         $this->min = $data->min ?? null;
