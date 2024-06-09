@@ -51,6 +51,20 @@ return [
             'throw' => false,
         ],
 
+        /* テンプレートのファイルを保存するディスク */
+        'views' => [
+            'driver' => 'local',
+            'root' => storage_path('app/views'),
+            'throw' => false,
+        ],
+
+        /* キャッシュのファイルを保存するディスク */
+        'cache' => [
+            'driver' => 'local',
+            'root' => storage_path('app/cache'),
+            'throw' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
