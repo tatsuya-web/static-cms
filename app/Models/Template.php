@@ -401,6 +401,8 @@ class Template extends Model
                     'value' => $value,
                 ]);
             }
+
+            $content->build();
         });
 
         return true;
@@ -441,6 +443,8 @@ class Template extends Model
                     'value' => $value ?? '',
                 ]);
             }
+
+            $content->build();
         });
 
         return true;

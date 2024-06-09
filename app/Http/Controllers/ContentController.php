@@ -80,6 +80,8 @@ class ContentController extends Controller
     {
         $content = Content::findOrFail($request->delete_id);
 
+        $content->deleteHtml();
+
         $result = $content->delete();
 
         if(! $result) {
