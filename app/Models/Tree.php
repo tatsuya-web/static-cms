@@ -62,6 +62,11 @@ class Tree extends Model
         return $this->type->isFolder();
     }
 
+    public function getIsHtmlAttribute()
+    {
+        return $this->media->mime === 'text/html';
+    }
+
     /*
     * rootノードを取得
     * @return \Illuminate\Database\Eloquent\Collection
@@ -151,43 +156,73 @@ class Tree extends Model
         }
 
         if($file) {
-
             // 圧縮ファイルの場合解凍してメディアを再起的に作成
             if($file->getClientMimeType() === 'application/zip') {
                 $zip = new \ZipArchive();
                 $zip->open($file->getPathname());
-                $zip->extractTo(storage_path('app/extracted'));
-                $zip->close();
 
-                $files = Storage::disk('local')->allFiles('extracted');
+                $res = $zip->open($file->getPathname());
 
-                foreach($files as $file) {
-                    // フォルダーの場合再帰的にフォルダを作成
-                    if(is_dir(storage_path('app/' . $file))) {
+                if ($res === TRUE) {
+                    $extractedPath = storage_path('app/extracted');
+                    $zip->extractTo($extractedPath);
+                    $zip->close();
+                
+                    // ディレクトリとファイルの両方を取得
+                    $directories = Storage::disk('local')->allDirectories('extracted');
+                    $files = Storage::disk('local')->allFiles('extracted');
+
+                    // `__MACOSX`ディレクトリを無視
+                    $directories = array_filter($directories, function ($dir) {
+                        return strpos($dir, '__MACOSX') === false;
+                    });
+
+                    $files = array_filter($files, function ($file) {
+                        return strpos($file, '__MACOSX') === false;
+                    });
+
+                    // .DS_Storeファイルを無視
+                    $files = array_filter($files, function ($file) {
+                        return strpos($file, '.DS_Store') === false;
+                    });
+
+                    // まずディレクトリを処理
+                    foreach ($directories as $key => $directoryPath) {
+
+                        if($key === 0) {
+                            continue;
+                        }
+
+                        $absolutePath = storage_path('app/' . $directoryPath);
+                        
                         $folder = $this->children()->create([
-                            'name' => $file->getClientOriginalName(),
+                            'name' => basename($directoryPath),
                             'type' => TreeType::Folder,
                             'status' => TreeStatus::Published,
                             'user_id' => auth()->id(),
                             'parent_id' => $this->id,
                             'template_id' => null,
                         ]);
-
-                        $folder->makeFolder($file);
+                
+                        $folder->makeFileOrFolder();
                     }
-                    else {
-                        $this->media()->create([
-                            'name' => $file->getClientOriginalName(),
-                            'path' => $path,
-                            'mime' => $file->getMimeType(),
-                            'size' => $file->getSize(),
-                        ]);
-            
-                        Storage::disk('html')->putFileAs($path, new UploadedFile($file, $file->getClientOriginalName()), $file->getClientOriginalName());
+                
+                    // 次にファイルを処理
+                    foreach ($files as $filePath) {
+                        $absolutePath = storage_path('app/' . $filePath);
+                
+                        $uploadedFile = new UploadedFile($absolutePath, basename($absolutePath));
+                        $fileName = $uploadedFile->getClientOriginalName();
+                        
+                
+                        Storage::disk('html')->putFileAs($this->getPath(), $uploadedFile, $fileName);
                     }
+                
+                    Storage::disk('local')->deleteDirectory('extracted');
+                } else {
+                    // エラーケースの処理
+                    throw new \Exception('ZIPファイルを開くことができませんでした。');
                 }
-
-                Storage::disk('local')->deleteDirectory('extracted');
             }
             else {
                 $this->media()->create([

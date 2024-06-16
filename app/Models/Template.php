@@ -402,7 +402,7 @@ class Template extends Model
                 ]);
             }
 
-            $content->build();
+            $content->makeHtml();
         });
 
         return true;
@@ -444,7 +444,7 @@ class Template extends Model
                 ]);
             }
 
-            $content->build();
+            $content->makeHtml();
         });
 
         return true;

@@ -132,6 +132,10 @@ class SiteTreeController extends Controller
                 return redirect()->route('app.site_tree.index')->with('error', 'ファイルの削除に失敗しました');
             }
 
+            if($tree->is_file) {
+                $tree->media()->delete();
+            }
+
             $tree->delete();
 
             return redirect()->route('app.site_tree.index')->with('success', 'ファイルを削除しました');
@@ -147,6 +151,10 @@ class SiteTreeController extends Controller
             }
             Log::error($e->getMessage());
             return redirect()->route('app.site_tree.index')->with('error', 'フォルダの削除に失敗しました');
+        }
+
+        if($tree->media) {
+            $tree->media()->delete();
         }
 
         $tree->delete();

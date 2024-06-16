@@ -23,7 +23,7 @@ class TreeUpdateRequest extends FormRequest
     {
         return [
             // txtファイルもアップロードできるようにする
-            'file' => ['required', 'file', 'mimes:txt,html,xml,jpeg,png,jpg,gif,svg,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip,rar', 'max:2048'],
+            'file' => ['required', 'file', 'mimes:txt,html,xml,jpeg,png,jpg,gif,svg,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip,rar', 'max:16384'],
         ];
     }
 

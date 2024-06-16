@@ -29,8 +29,8 @@ class TreeCreateRequest extends FormRequest
         return [
             'name' => ['required_if:type,' . TreeType::Folder->value, 'nullable', 'string', 'max:255'],
             'type' => ['required', new Enum(TreeType::class)],
-            // txtファイルもアップロードできるようにする
-            'file' => ['required_if:type,' . TreeType::File->value, 'nullable', 'file', 'mimes:txt,html,xml,jpeg,png,jpg,gif,svg,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip,rar', 'max:2048'],
+            // txtファイルもアップロードできるようにする 16MB
+            'file' => ['required_if:type,' . TreeType::File->value, 'nullable', 'file', 'mimes:txt,html,xml,jpeg,png,jpg,gif,svg,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip,rar', 'max:16384'],
         ];
     }
 

@@ -70,10 +70,38 @@ class Content extends Model
     }
 
     /*
+    * パラメータで指定された値をValuesから取得
+    * @param string $var
+    * @return mixed
+    */
+    public function getField(string $var)
+    {
+        return $this->values->where('name', $var)->first()?->value ?? '';
+    }
+
+    /*
+    * treeのhtmlファイル名までの絶対パスを取得
+    * @return string
+    */
+    public function getFileName(): string
+    {
+        return $this->template->name . '_content' . $this->id . '.html';
+    }
+
+    /*
+    * treeのファイルへのパスを取得
+    * @return string
+    */
+    public function getAbsolutePath(): string
+    {
+        return '/' . $this->template->tree->getPath() . '/' . $this->getFileName();
+    }
+
+    /*
     * renderメソッドから帰ってきた値を$templateの $name + '_content' + $id . '.html' として保存
     * @return void
     */
-    public function build(): void
+    public function makeHtml(): void
     {
         $content = $this->render();
 

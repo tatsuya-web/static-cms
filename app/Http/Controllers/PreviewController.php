@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Engine\Engine;
 use App\Models\Tree;
-use Illuminate\Http\Request;
 
 class PreviewController extends Controller
 {
@@ -21,8 +21,17 @@ class PreviewController extends Controller
             abort(404);
         }
 
+        $file = $tree->media->file;
+
+        if ($tree->is_html) {
+
+            $engine = Engine::factory();
+
+            $file = $engine->renderString($file, []);
+        }
+
         // ファイルをそのまま表示
-        return response($tree->media->file)
+        return response($file)
             ->header('Content-Type', $tree->media->mime_type);
     }
 }
