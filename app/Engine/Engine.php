@@ -111,6 +111,11 @@ class Engine
                                 'pattern' => '/\_whereNotIn\[([a-zA-Z0-9_]+),(.+)\]/',
                                 'replace' => 'key,value',
                             ],
+        'whereLike'        => [
+                                // XXX_whereLike[title,%test%]
+                                'pattern' => '/\_whereLike\[([a-zA-Z0-9_]+),(.+)\]/',
+                                'replace' => 'key,value',
+                            ],
         'orderBy'          => [
                                 // XXX_orderBy[created_at,desc]
                                 'pattern' => '/\_orderBy\[([a-zA-Z0-9_]+),(asc|desc)\]/',
@@ -128,7 +133,7 @@ class Engine
 
         $this->mode = BladeOne::MODE_DEBUG;
 
-        $this->blade = new BladeOne($this->views, $this->cache, $this->mode);
+        $this->blade = new CustomeBladeOne($this->views, $this->cache, $this->mode);
 
         $this->setMethod();
     }
@@ -217,7 +222,7 @@ class Engine
     */
     public function refresh(): self
     {
-        $this->blade = new BladeOne($this->views, $this->cache, $this->mode);
+        $this->blade = new CustomeBladeOne($this->views, $this->cache, $this->mode);
 
         $this->setMethod();
 
@@ -357,6 +362,10 @@ class Engine
                     }),
                     'whereNotIn'             => $contents->whereHas('values', function($q) use ($query_value) {
                         $q->where('name', $query_value['key'])->whereNotIn('value', explode(':', $query_value['value']));
+                    }),
+                    'whereLike'              => $contents->whereHas('values', function($q) use ($query_value) {
+                        $key = '%' . addcslashes($query_value['value'], '%_\\') . '%';
+                        $q->where('name', $query_value['key'])->where('value', 'like', $key);
                     }),
                     'orderBy'                => $contents->orderBy($query_value['key'], $query_value['order']),
                 };
