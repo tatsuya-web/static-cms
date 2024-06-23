@@ -43,15 +43,6 @@
                                     </div>
                                     @enderror
                                 </div>
-                                <div class="input @error('format') -invalid @enderror">
-                                    <label class="input_ttl -req">入力フォーマットファイル</label>
-                                    <input type="file" name="format" accept=".json" required>
-                                    @error('format')
-                                    <div class="input_feedback">
-                                        <span>{{ $message }}</span>
-                                    </div>
-                                    @enderror
-                                </div>
                             </div>
                         </div>
                         <div class="flex mt-3 -end">

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TemplateFormat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +16,10 @@ class Value extends Model
         'value',
         'template_id',
         'parent_id',
+    ];
+
+    protected $casts = [
+        'format' => TemplateFormat::class,
     ];
 
     public function template()

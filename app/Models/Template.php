@@ -379,27 +379,10 @@ class Template extends Model
                 'user_id' => auth()->user()->id,
             ]);
 
-            foreach($values as $key => $value) {
+            $result = $this->makeValues($content, null, $values);
 
-                $format = $this->format_items->filter(function($item) use ($key) {
-                    return $item->getName() === $key;
-                })->first();
-
-                if(! $format) {
-                    FacadesLog::error(config('error.invalid_format'));
-                    return false;
-                }
-
-                // $valueが配列の場合は、:で区切って保存する
-                if(is_array($value)) {
-                    $value = implode(':', $value);
-                }
-
-                $content->values()->create([
-                    'format' => $format->getType(),
-                    'name' => $key,
-                    'value' => $value,
-                ]);
+            if(! $result) {
+                return false;
             }
 
             $content->makeHtml();
@@ -407,6 +390,7 @@ class Template extends Model
 
         return true;
     }
+
 
     /*
     * Valuesを更新する
@@ -421,31 +405,87 @@ class Template extends Model
 
             $content->values()->delete();
 
-            foreach($values as $key => $value) {
+            $result = $this->makeValues($content, null, $values);
 
-                $format = $this->format_items->filter(function($item) use ($key) {
-                    return $item->getName() === $key;
-                })->first();
-
-                if(! $format) {
-                    FacadesLog::error(config('error.invalid_format'));
-                    return false;
-                }
-
-                // $valueが配列の場合は、:で区切って保存する
-                if(is_array($value)) {
-                    $value = implode(':', $value);
-                }
-
-                $content->values()->create([
-                    'format' => $format->getType(),
-                    'name' => $key,
-                    'value' => $value ?? '',
-                ]);
+            if(! $result) {
+                return false;
             }
 
             $content->makeHtml();
         });
+
+        return true;
+    }
+
+    /*
+    * Valuesを作成する
+    *
+    * @param Content $content
+    * @param array $values
+    * @return bool
+    */
+    private function makeValues(Content $content, ?Value $parent = null, array $values): bool
+    {
+        foreach($values as $key => $value) {
+
+            $format = null;
+
+            if(! is_null($parent)) {
+                $this->format_items->filter(function($item) use ($key, &$format) {
+                    return $item->getItems()->filter(function($item) use ($key, &$format) {
+                        if($item->getName() === $key) {
+                            $format = $item;
+                            return true;
+                        }
+                    })->first();
+                })->first();
+            } else {
+                $format = $this->format_items->filter(function($item) use ($key) {
+                    return $item->getName() === $key;
+                })->first();
+            }
+
+            if(! $format) {
+                FacadesLog::error(config('error.invalid_format'));
+                return false;
+            }
+
+            // $valueが配列でキーが数字の場合は、:で区切って保存する
+            if($format->getType() === TemplateFormat::Checkbox->value) {
+                $value = implode(':', $value);
+            }
+
+            // $valueが配列の場合で、キーが数字以外の場合は、$valueのキーでValueを作成して、そのContentのIDを保存する
+            if($format->getType() === TemplateFormat::Group->value) {
+                $parent = $content->values()->create([
+                    'format' => $format->getType(),
+                    'name' => $key,
+                    'value' => '',
+                ]);
+
+                $result = $this->makeValues($content, $parent, $value);
+
+                if(!$result) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            if(!is_null($parent) && !is_array($value)) {
+                $parent->children()->create([
+                    'format' => $format->getType(),
+                    'name' => $key,
+                    'value' => $value ?? '',
+                ]);
+            } else {
+                $content->values()->create([
+                    'format' => $format->getType(),
+                    'name' => $key,
+                    'value' => is_array($value) ? '' : $value,
+                ]);
+            }
+        }
 
         return true;
     }

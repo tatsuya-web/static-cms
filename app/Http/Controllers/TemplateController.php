@@ -37,7 +37,7 @@ class TemplateController extends Controller
         try {
             DB::beginTransaction();
     
-            $template = Template::create([
+            Template::create([
                 'type' => TemplateType::Common,
                 'name' => $data['name'],
                 'show_name' => $data['show_name'],
@@ -46,8 +46,6 @@ class TemplateController extends Controller
                 'description' => $data['description'],
                 'user_id' => auth()->id(),
             ]);
-
-            $template->makeFormat($data['format']);
     
             DB::commit();
         } catch (\Exception $e) {
@@ -77,10 +75,6 @@ class TemplateController extends Controller
                 'show_name' => $data['show_name'],
                 'description' => $data['description'],
             ]);
-
-            if($data['format']) {
-                $template->updateFormat($data['format']);
-            }
 
             if($data['src']) {
                 $template->updateOrCreateSrc($data['src']);

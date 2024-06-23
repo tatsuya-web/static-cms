@@ -18,11 +18,12 @@ enum TemplateFormat : string
     case Radio = 'radio';
     case Checkbox = 'checkbox';
     case File = 'file';
+    case Group = 'group';
 
     public static function exist(string $type): bool
     {
         return match ($type) {
-            'text', 'url', 'email', 'tel', 'date', 'time', 'datetime', 'number', 'textarea', 'rich_editor', 'select', 'radio', 'checkbox', 'file' => true,
+            'text', 'url', 'email', 'tel', 'date', 'time', 'datetime', 'number', 'textarea', 'rich_editor', 'select', 'radio', 'checkbox', 'file', 'group' => true,
             default => false,
         };
     }
@@ -73,6 +74,14 @@ enum TemplateFormat : string
         };
     }
 
+    public function isGroup(): bool
+    {
+        return match ($this->value) {
+            'group' => true,
+            default => false,
+        };
+    }
+
     public function hasMin(): bool
     {
         return match ($this->value) {
@@ -85,6 +94,14 @@ enum TemplateFormat : string
     {
         return match ($this->value) {
             'number' => true,
+            default => false,
+        };
+    }
+
+    public function hasItems(): bool
+    {
+        return match ($this->value) {
+            'group' => true,
             default => false,
         };
     }

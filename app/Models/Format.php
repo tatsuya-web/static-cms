@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Enums\TemplateFormat;
+use Illuminate\Support\Collection;
 
 class Format
 {
     private string $label;
+
+    private string $parent = '';
 
     private string $name;
 
@@ -26,6 +29,8 @@ class Format
 
     private bool $index = false;
 
+    private Collection $items;
+
     public function __construct(object $data){
         $this->label = $data->label;
         $this->name = $data->name;
@@ -37,6 +42,30 @@ class Format
         $this->max = $data->max ?? null;
         $this->accept = $data->accept ?? '';
         $this->index = $data->index ?? false;
+
+        if($this->type->hasItems()){
+            $this->items = collect($data->items)->map(function($item){
+                if($this->type->isGroup()){
+                    return (new Format($item))->setGroup($this->name);
+                } else {
+                    return new Format($item);
+                }
+            });
+        } else {
+            $this->items = collect([]);
+        }
+    }
+
+    public function setGroup(string $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    public function getParent(): string
+    {
+        return $this->parent;
     }
 
     public function getLabel(): string
@@ -49,9 +78,22 @@ class Format
         return $this->name;
     }
 
+    public function getInputName(): string
+    {
+        if($this->parent !== ''){
+            return $this->parent . '[' . $this->name . ']';
+        } else {
+            return $this->name;
+        }
+    }
+
     public function getValidationName(): string
     {
-        return $this->name;
+        if($this->parent !== ''){
+            return $this->parent . '.' . $this->name;
+        } else {
+            return $this->name;
+        }
     }
 
     public function getType(): string
@@ -94,6 +136,11 @@ class Format
         return TemplateFormat::getAcceptTypeString($this->accept);
     }
 
+    public function getItems(): Collection
+    {
+        return $this->items;
+    }
+
     public function isIndex(): bool
     {
         return $this->index;
@@ -122,5 +169,25 @@ class Format
     public function hasMax(): bool
     {
         return $this->type->hasMax();
+    }
+
+    public function hasItems(): bool
+    {
+        return $this->type->hasItems();
+    }
+
+    public function hasParent(): bool
+    {
+        return $this->parent !== '';
+    }
+
+    public function whereItemName(string $name): ?Format
+    {
+        $item = $this->items->filter(function($item) use ($name){
+            dd($item->getName(), $name); // dd() is not executed
+            return $item->getName() === $name;
+        })->first();
+
+        return $item;
     }
 }

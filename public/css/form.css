@@ -114,6 +114,10 @@ select {
 .input {
   margin-bottom: 1.5rem;
 }
+.input.-has_item {
+  border: solid 2px var(--text-gray);
+  padding: 1.5rem;
+}
 .input_ttl {
   margin-bottom: 0.5rem;
   font-weight: bold;

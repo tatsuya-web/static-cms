@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Engine\Engine;
 use App\Enums\TreeStatus;
 use App\Enums\TreeType;
+use App\Enums\TemplateFormat;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
@@ -60,7 +61,20 @@ class Content extends Model
     */
     public function getValue(Format $format)
     {
-        $value = $this->values->where('name', $format->getName())->first()?->value ?? '';
+        $value = '';
+
+        if($format->hasParent()) {
+            $parent = $this->values->where('name', $format->getParent())->first();
+
+            if($parent->format === TemplateFormat::Group){
+                $value = $parent->children->where('name', $format->getName())->first()?->value ?? '';
+            } else {
+                $value = '';
+            }
+
+        } else {
+            $value = $this->values->where('name', $format->getName())->first()?->value ?? '';
+        }
 
         if ($format->getType() === 'checkbox') {
             return explode(':', $value);
@@ -108,15 +122,35 @@ class Content extends Model
         // templateのtreeに保存されているパスにhtmlファイルを保存
         $path = $this->template->tree->getPath();
 
-        $tree = Tree::create([
-            'name' => $this->file_name,
-            'type' => TreeType::File,
-            'status' => TreeStatus::Published,
-            'user_id' => auth()->id(),
-            'parent_id' => $this->template->tree->id,
-            'template_id' => null,
-        ]);
+        $old_tree = Tree::where(function($query){
+            $query->where('name', $this->file_name);
+            $query->where('parent_id', $this->template->tree->id);
+        })->first();
 
+        if ($old_tree) {
+            $old_tree->media()->delete();
+            $old_tree->update([
+                'name' => $this->file_name,
+                'type' => TreeType::File,
+                'status' => TreeStatus::Published,
+                'user_id' => auth()->id(),
+                'parent_id' => $this->template->tree->id,
+                'template_id' => null,
+            ]);
+
+            $tree = $old_tree;
+        } else {
+            $tree = Tree::create([
+                'name' => $this->file_name,
+                'type' => TreeType::File,
+                'status' => TreeStatus::Published,
+                'user_id' => auth()->id(),
+                'parent_id' => $this->template->tree->id,
+                'template_id' => null,
+            ]);
+        }
+
+        // ファイルの保存先に同名のファイルがある場合は上書き
         $result = Storage::disk('html')->put($path . '/' . $this->file_name, $content);
 
         if ($result) {
@@ -139,13 +173,39 @@ class Content extends Model
 
         $view = $this->template->name;
 
-        $compacts = [];
-
-        foreach ($this->values as $value) {
-            $compacts[$value->name] = $value->value;
-        }
+        $compacts = $this->computeValues($this->values);
 
         $result = $engine->render($view, $compacts);
+
+        return $result;
+    }
+
+    public function computeValues($values): array
+    {
+        $result = [];
+
+        foreach ($values as $value) {
+            if($value->format === TemplateFormat::Group) {
+                $result[$value->name] = [];
+                foreach ($value->children as $child) {
+
+                    // childがgroupの場合は再帰的に処理
+                    if($child->format === TemplateFormat::Group) {
+                        array_push($result[$value->name], $this->computeValues($child));
+                        continue;
+                    }
+
+                    if($child->format === TemplateFormat::Checkbox) {
+                        $result[$value->name][$child->name] = explode(':', $child->value);
+                        continue;
+                    }
+                    $result[$value->name][$child->name] = $child->value;
+                }
+                continue;
+            }
+            
+            $result[$value->name] = $value->value;
+        }
 
         return $result;
     }

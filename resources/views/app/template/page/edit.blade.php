@@ -84,34 +84,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($template->format_items as $key => $item)
-                                            <tr>
-                                                <td>{{ $key + 1 }}</td>
-                                                <td>{{ $item->getLabel() }}</td>
-                                                <td>{{ $item->getName() }}</td>
-                                                <td>{{ $item->getType() }}</td>
-                                                <td>{{ $item->isRequired() ? '○' : '' }}</td>
-                                                <td>
-                                                    @if($item->hasOptions())
-                                                        @foreach($item->getOptions() as $option)
-                                                        <span>{{ $option->label }}:{{ $option->value }} </span>
-                                                        @endforeach
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if($item->hasAccept())
-                                                    {{ $item->getAcceptString() }}
-                                                    @endif
-                                                    @if($item->hasMin())
-                                                    最小値:{{ $item->getMin() }}
-                                                    @endif
-                                                    @if($item->hasMax())
-                                                    最大値:{{ $item->getMax() }}
-                                                    @endif
-                                                </td>
-                                                <td>{{ $item->isIndex() ? '○' : '' }}</td>
-                                            </tr>
-                                            @endforeach
+                                            @include('app.template.page._items', ['items' => $template->format_items])
                                         </tbody>
                                     </table>
                                 @else

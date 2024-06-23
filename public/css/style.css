@@ -480,6 +480,10 @@ table > :not(caption) > * > * {
   border-bottom: var(--border-main);
 }
 
+table tr.-has_item {
+  background: var(--text-gray) !important;
+}
+
 .dataTables_wrapper {
   margin-top: 2rem;
   overflow: hidden;

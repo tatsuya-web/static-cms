@@ -25,7 +25,6 @@ class CommonTemplateUpdateRequest extends FormRequest
             'show_name' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:255'],
-            'format' => ['nullable', 'file', 'mimes:json'],
             'src' => ['nullable', 'file', 'mimes:html,txt'],
         ];
     }
@@ -46,8 +45,6 @@ class CommonTemplateUpdateRequest extends FormRequest
             'name.max' => '名前は255文字以内で入力してください。',
             'description.string' => '説明は文字列で入力してください。',
             'description.max' => '説明は255文字以内で入力してください。',
-            'format.file' => 'フォーマットはファイルで入力してください。',
-            'format.mimes' => 'フォーマットはjson形式で入力してください。',
             'src.file' => 'ソースコードはファイルで入力してください。',
             'src.mimes' => 'ソースコードはhtml形式で入力してください。',
         ];
@@ -64,7 +61,6 @@ class CommonTemplateUpdateRequest extends FormRequest
             'show_name' => '表示名',
             'name' => '名前',
             'description' => '説明',
-            'format' => 'フォーマット',
             'src' => 'ソースコード',
         ];
     }
@@ -78,13 +74,7 @@ class CommonTemplateUpdateRequest extends FormRequest
             'show_name' => $this->input('show_name'),
             'name' => $this->input('name'),
             'description' => $this->input('description') ?? '',
-            'format' => $this->file('format') ?? null,
             'src' => $this->file('src') ?? null,
         ];
     }
-
-    /*
-    * srcは拡張子が.htmlのファイルのみ許可する
-    * 
-    */
 }

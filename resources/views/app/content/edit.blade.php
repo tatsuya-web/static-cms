@@ -20,7 +20,7 @@
                         </p>
                         <div class="col-12">
                             @foreach ($template->format_items as $item)
-                                @include('app.content._form_item' , ['item' => $item], ['value' => $content->getValue($item)])
+                                @include('app.content._form_item' , ['item' => $item], ['content' => $content])
                             @endforeach
                         </div>
                         <div class="flex mt-3 -end">

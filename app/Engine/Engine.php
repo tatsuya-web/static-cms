@@ -63,12 +63,12 @@ class Engine
                                 // XXX_where['category_id','<=',1]
                                 // XXX_where['category_id','>',1]
                                 // XXX_where['category_id','<',1]
-                                'pattern' => '/\_where\[([a-zA-Z0-9_]+),([=|!=|>=|<=|>|<]+),(.+)\]/',
+                                'pattern' => '/\_where\[([a-zA-Z0-9_\.]+),([=|!=|>=|<=|>|<]+),(.+)\]/',
                                 'replace' => 'key,operator,value',
                             ],
         'whereBetween'     => [
                                 // XXX_whereBetween[price,1,10]
-                                'pattern' => '/\_whereBetween\[([a-zA-Z0-9_]+),([0-9]+),([0-9]+)\]/',
+                                'pattern' => '/\_whereBetween\[([a-zA-Z0-9_\.]+),([0-9]+),([0-9]+)\]/',
                                 'replace' => 'key,min,max',
                             ],
         'whereDate'        => [
@@ -98,27 +98,27 @@ class Engine
                             ],
         'whereNot'         => [
                                 // XXX_whereNot[category_id,1]
-                                'pattern' => '/\_whereNot\[([a-zA-Z0-9_]+),(.+)\]/',
+                                'pattern' => '/\_whereNot\[([a-zA-Z0-9_\.]+),(.+)\]/',
                                 'replace' => 'key,value',
                             ],
         'whereIn'           => [
                                 // XXX_whereIn[category_id,1:2:3]
-                                'pattern' => '/\_whereIn\[([a-zA-Z0-9_]+),(.+)\]/',
+                                'pattern' => '/\_whereIn\[([a-zA-Z0-9_\.]+),(.+)\]/',
                                 'replace' => 'key,value',
                             ],
         'whereNotIn'       => [
                                 // XXX_whereNotIn[category_id,1:2:3]
-                                'pattern' => '/\_whereNotIn\[([a-zA-Z0-9_]+),(.+)\]/',
+                                'pattern' => '/\_whereNotIn\[([a-zA-Z0-9_\.]+),(.+)\]/',
                                 'replace' => 'key,value',
                             ],
         'whereLike'        => [
                                 // XXX_whereLike[title,%test%]
-                                'pattern' => '/\_whereLike\[([a-zA-Z0-9_]+),(.+)\]/',
+                                'pattern' => '/\_whereLike\[([a-zA-Z0-9_\.]+),(.+)\]/',
                                 'replace' => 'key,value',
                             ],
         'orderBy'          => [
                                 // XXX_orderBy[created_at,desc]
-                                'pattern' => '/\_orderBy\[([a-zA-Z0-9_]+),(asc|desc)\]/',
+                                'pattern' => '/\_orderBy\[([a-zA-Z0-9_\.]+),(asc|desc)\]/',
                                 'replace' => 'key,order',
                             ],
     ];
@@ -317,7 +317,6 @@ class Engine
 
         foreach($reserv_vars as $reserv_var) {
             $contents = Template::where('multi_value_name', $reserv_var['model'])->first()->contents();
-            
             foreach($reserv_var['query'] as $key => $query) {
                 $query_value = $query[0]['values'];
                 match($key) {
@@ -328,10 +327,42 @@ class Engine
                     'reverse'                => $contents->orderBy('id', 'desc'),
                     'limit'                  => $contents->take($query_value['value']),
                     'where'                  => $contents->whereHas('values', function($q) use ($query_value) {
-                        $q->where('name', $query_value['key'])->where('value', $query_value['operator'], $query_value['value']);
+                        $keys = explode('.', $query_value['key']);
+                        if(count($keys) > 1) {
+                            $q->where('name', $keys[0]);
+                            foreach($keys as $key) {
+                                if($key == $keys[0]) {
+                                    continue;
+                                }
+                                $q->whereHas('children', function($q) use ($keys, $key, $query_value) {
+                                    $q->where('name', $key);
+                                    if($key == end($keys)) {
+                                        $q->where('value', $query_value['operator'], $query_value['value']);
+                                    }
+                                });
+                            }
+                        } else {
+                            $q->where('name', $query_value['key'])->where('value', $query_value['operator'], $query_value['value']);
+                        }
                     }),
                     'whereBetween'           => $contents->whereHas('values', function($q) use ($query_value) {
-                        $q->where('name', $query_value['key'])->whereBetween('value', [$query_value['min'], $query_value['max']]);
+                        $keys = explode('.', $query_value['key']);
+                        if(count($keys) > 1) {
+                            $q->where('name', $keys[0]);
+                            foreach($keys as $key) {
+                                if($key == $keys[0]) {
+                                    continue;
+                                }
+                                $q->whereHas('children', function($q) use ($keys, $key, $query_value) {
+                                    $q->where('name', $key);
+                                    if($key == end($keys)) {
+                                        $q->where('value', '>=', $query_value['min'])->where('value', '<=', $query_value['max']);
+                                    }
+                                });
+                            }
+                        } else {
+                            $q->where('name', $query_value['key'])->whereBetween('value', [$query_value['min'], $query_value['max']]);
+                        }
                     }),
                     'whereDate'              => $contents->whereHas('values', function($q) use ($query_value) {
                         // $query_value['date']の値に'が含まれている場合取り除く
@@ -355,17 +386,81 @@ class Engine
                         $q->whereDate('updated_at', '>=', $query_value['min'])->whereDate('updated_at', '<=', $query_value['max']);
                     }),
                     'whereNot'               => $contents->whereHas('values', function($q) use ($query_value) {
-                        $q->where('name', $query_value['key'])->where('value', '!=', $query_value['value']);
+                        $keys = explode('.', $query_value['key']);
+                        if(count($keys) > 1) {
+                            $q->where('name', $keys[0]);
+                            foreach($keys as $key) {
+                                if($key == $keys[0]) {
+                                    continue;
+                                }
+                                $q->whereHas('children', function($q) use ($keys, $key, $query_value) {
+                                    $q->where('name', $key);
+                                    if($key == end($keys)) {
+                                        $q->where('value', '!=', $query_value['value']);
+                                    }
+                                });
+                            }
+                        } else {
+                            $q->where('name', $query_value['key'])->where('value', '!=', $query_value['value']);
+                        }
                     }),
                     'whereIn'                => $contents->whereHas('values', function($q) use ($query_value) {
-                        $q->where('name', $query_value['key'])->whereIn('value', explode(':', $query_value['value']));
+                        $keys = explode('.', $query_value['key']);
+                        if(count($keys) > 1) {
+                            $q->where('name', $keys[0]);
+                            foreach($keys as $key) {
+                                if($key == $keys[0]) {
+                                    continue;
+                                }
+                                $q->whereHas('children', function($q) use ($keys, $key, $query_value) {
+                                    $q->where('name', $key);
+                                    if($key == end($keys)) {
+                                        $q->whereIn('value', explode(':', $query_value['value']));
+                                    }
+                                });
+                            }
+                        } else {
+                            $q->where('name', $query_value['key'])->whereIn('value', explode(':', $query_value['value']));
+                        }
                     }),
                     'whereNotIn'             => $contents->whereHas('values', function($q) use ($query_value) {
-                        $q->where('name', $query_value['key'])->whereNotIn('value', explode(':', $query_value['value']));
+                        $keys = explode('.', $query_value['key']);
+                        if(count($keys) > 1) {
+                            $q->where('name', $keys[0]);
+                            foreach($keys as $key) {
+                                if($key == $keys[0]) {
+                                    continue;
+                                }
+                                $q->whereHas('children', function($q) use ($keys, $key, $query_value) {
+                                    $q->where('name', $key);
+                                    if($key == end($keys)) {
+                                        $q->whereNotIn('value', explode(':', $query_value['value']));
+                                    }
+                                });
+                            }
+                        } else {
+                            $q->where('name', $query_value['key'])->whereNotIn('value', explode(':', $query_value['value']));
+                        }
                     }),
                     'whereLike'              => $contents->whereHas('values', function($q) use ($query_value) {
-                        $key = '%' . addcslashes($query_value['value'], '%_\\') . '%';
-                        $q->where('name', $query_value['key'])->where('value', 'like', $key);
+                        $value = '%' . addcslashes($query_value['value'], '%_\\') . '%';
+                        $keys = explode('.', $query_value['key']);
+                        if(count($keys) > 1) {
+                            $q->where('name', $keys[0]);
+                            foreach($keys as $key) {
+                                if($key == $keys[0]) {
+                                    continue;
+                                }
+                                $q->whereHas('children', function($q) use ($keys, $key, $value) {
+                                    $q->where('name', $key);
+                                    if($key == end($keys)) {
+                                        $q->where('value', 'like', $value);
+                                    }
+                                });
+                            }
+                        } else {
+                            $q->where('name', $query_value['key'])->where('value', 'like', $value);
+                        }
                     }),
                     'orderBy'                => $contents->orderBy($query_value['key'], $query_value['order']),
                 };

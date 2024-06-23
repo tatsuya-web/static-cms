@@ -2,11 +2,12 @@
 @props([
     'item' => null,
     'value' => null,
+    'content' => null,
 ])
 
 @php
     $type = $item->getType();
-    $name = $item->getName();
+    $name = $item->getInputName();
     $label = $item->getLabel();
     $required = $item->isRequired();
     $placeholder = $item->getPlaceholder();
@@ -14,7 +15,7 @@
     $min = $item->hasMin() ? $item->getMin() : null;
     $max = $item->hasMax() ? $item->getMax() : null;
     $accept = $item->hasAccept() ? $item->getAccept() : null;
-    $value = old($name, $value);
+    $value = old($name, $content?->getValue($item));
 @endphp
 
-@include('app.content._form.' . $type, compact('name', 'label', 'required', 'placeholder', 'options', 'min', 'max', 'accept', 'value'))
+@include('app.content._form.' . $type, compact('name', 'label', 'required', 'placeholder', 'options', 'min', 'max', 'accept', 'value', 'content'))
