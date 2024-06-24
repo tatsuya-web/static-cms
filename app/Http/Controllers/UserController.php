@@ -14,9 +14,9 @@ class UserController extends Controller
 {
     public function index(): View
     {
-        $users = auth()->user()->role === Role::Developper
+        $users = auth()->user()->role === Role::Developer
             ? User::all()
-            : User::getWithoutDevelopper();
+            : User::getWithoutDeveloper();
 
         return view('app.user.index', compact('users'));
     }
@@ -55,7 +55,7 @@ class UserController extends Controller
         }
 
         // ログインユーザーが開発者でない場合、開発者ユーザーを削除できない
-        if ($user->is_developper && ! auth()->user()->is_developper) {
+        if ($user->is_developer && ! auth()->user()->is_developer) {
             return redirect()->back()->with('error', '開発者ユーザーは削除できません。');
         }
 

@@ -50,22 +50,22 @@ class User extends Authenticatable
     }
 
     /*
-    * Get users without developper
+    * Get users without developer
     *
     * @return \Illuminate\Database\Eloquent\Collection
     */
-    public static function getWithoutDevelopper()
+    public static function getWithoutDeveloper()
     {
-        return static::where('role', '!=', Role::Developper)->get();
+        return static::where('role', '!=', Role::Developer)->get();
     }
 
     /**
-     * Check if the user is a developper
+     * Check if the user is a developer
      *
      * @return bool
      */
-    public function getIsDevelopperAttribute(): bool
+    public function getIsDeveloperAttribute(): bool
     {
-        return $this->role === Role::Developper;
+        return $this->role === Role::Developer;
     }
 }
