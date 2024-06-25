@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Engine\Engine;
 use App\Models\Tree;
+use Illuminate\Support\Facades\Storage;
 
 class PreviewController extends Controller
 {
@@ -12,7 +13,12 @@ class PreviewController extends Controller
         if (is_null($any)) {
             // any が指定されていない場合は、トップページを表示
             $tree = Tree::getIndexHTML();
-        } else {
+        } 
+        // anyが/_uploads/以下の場合は、そのまま表示
+        elseif (strpos($any, '_uploads/') === 0) {
+            // htmlドライバーの_uploads内のファイルを表示する
+            return response()->file(Storage::disk('html')->path($any));
+        }else {
             // any が指定されている場合は、該当するページを表示
             $tree = Tree::getTreeByPath($any);
         }

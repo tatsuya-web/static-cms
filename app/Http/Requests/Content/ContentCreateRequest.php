@@ -55,7 +55,8 @@ class ContentCreateRequest extends FormRequest
         foreach($this->template->format_items as $format_item) {
             // fileの場合は、ファイルを保存してパスを保存する
             if($format_item->getType() === TemplateFormat::File->value && $this->file($format_item->getValidationName())) {
-                $data[$format_item->getName()] = $this->file($format_item->getValidationName())->store('public');
+                // htmlドライバーの_uploads内に保存する
+                $data[$format_item->getName()] = $this->file($format_item->getValidationName())->store('_uploads', 'html');
                 continue;
             // checkboxの場合は、チェックされている値を配列で保存する
             } else if($format_item->getType() === TemplateFormat::Checkbox->value) {
