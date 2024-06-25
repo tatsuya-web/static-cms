@@ -5,7 +5,7 @@ namespace App\Http\Requests\Tree;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 use App\Enums\TreeType;
-use App\Models\Tree;
+use App\Rules\StoreTreeRule;
 
 use function PHPUnit\Framework\returnSelf;
 
@@ -27,7 +27,7 @@ class TreeCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required_if:type,' . TreeType::Folder->value, 'nullable', 'string', 'max:255'],
+            'name' => ['required_if:type,' . TreeType::Folder->value, new StoreTreeRule, 'nullable', 'string', 'max:255'],
             'type' => ['required', new Enum(TreeType::class)],
             // txtファイルもアップロードできるようにする 16MB
             'file' => ['required_if:type,' . TreeType::File->value, 'nullable', 'file', 'mimes:txt,html,xml,jpeg,png,jpg,gif,svg,pdf,doc,docx,xls,xlsx,ppt,pptx,txt,zip,rar', 'max:16384'],
