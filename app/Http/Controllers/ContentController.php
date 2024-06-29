@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Content\ContentCreateRequest;
+use App\Http\Requests\Content\ContentRequest;
 use App\Models\Content;
 use App\Models\Template;
 use Illuminate\Http\Request;
@@ -32,7 +32,7 @@ class ContentController extends Controller
         return view('app.content.create', compact('template'));
     }
 
-    public function store(ContentCreateRequest $request, Template $template) : RedirectResponse
+    public function store(ContentRequest $request, Template $template) : RedirectResponse
     {
         if($template->is_valided_format === false) {
             Log::error(config('error.invalid_type'));
@@ -59,7 +59,7 @@ class ContentController extends Controller
         return view('app.content.edit', compact('template', 'content'));
     }
 
-    public function update(ContentCreateRequest $request, Template $template, Content $content) : RedirectResponse
+    public function update(ContentRequest $request, Template $template, Content $content) : RedirectResponse
     {
         if($template->is_valided_format === false) {
             Log::error(config('error.invalid_type'));

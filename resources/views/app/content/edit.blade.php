@@ -33,4 +33,22 @@
             </div>
         </form>
     </div>
+    <x-slot name="footer">
+        <script>
+            function filedel(_this, name, value) {
+                if (confirm('削除しますか？')) {
+                    // 直近の親要素を削除する
+                    _this.parentNode.remove();
+                    // input :hiddenでnameがnameのvalueがvalueの要素を取得する
+                    const input = document.querySelector('input[name="' + name + '"][value="' + value + '"]');
+
+                    // もしinputがあれば、削除する
+                    if (input) {
+                        input.remove();
+                    }
+                }
+            }
+        </script>
+        </script>
+    </x-slot>
 </x-app-layout>

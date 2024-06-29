@@ -482,7 +482,7 @@ class Template extends Model
                 $content->values()->create([
                     'format' => $format->getType(),
                     'name' => $key,
-                    'value' => is_array($value) ? '' : $value,
+                    'value' => is_array($value) ? '' : ($value ?? ''),
                 ]);
             }
         }

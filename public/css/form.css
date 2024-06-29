@@ -269,3 +269,24 @@ select {
   height: 500px;
   max-width: 100svh;
 }/*# sourceMappingURL=form.css.map */
+
+.input .file {
+  position: relative;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.input .file .del {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  color: #000;
+  border: solid 1px #000;
+}
